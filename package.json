@@ -50,7 +50,7 @@
         "nonce": "1.0.4",
         "redis": "2.7.1",
         "request": "2.87.0",
-        "stratum-pool": "git+https://github.com/mikasaukyou/node-stratum-pool-vips.git#Support-for-Bellcoin"
+        "stratum-pool": "git+https://github.com/mikasaukyou/node-stratum-pool-yescrypt-0.5.git"
     },
     "engines": {
         "node": ">=0.10"

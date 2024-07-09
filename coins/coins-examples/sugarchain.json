@@ -4,6 +4,9 @@
     "algorithm": "yespowerSUGAR",
     "peerMagic": "9feb4b9d",
     "peerMagicTestnet": "b0119070",
+    "getInfo": false,
+    "noNetworkInfo": false,
+    "noGetnetworkhashps": true,
     "mainnet": {
         "bech32": "sugar",
         "bip32": {
@@ -14,7 +17,7 @@
     },
     "blockTime": 5,
     "explorer": {
-        "txURL": "https://1explorer.sugarchain.org/tx/",
-        "blockURL": "https://1explorer.sugarchain.org/block/"
+        "txURL": "https://sugarchain.org/explorer/#/transaction/",
+        "blockURL": "https://sugarchain.org/explorer/#/block/"
     }
 }

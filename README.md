@@ -1,10 +1,9 @@
 # BitZeny - Node Open Mining Portal
-[![Join the chat at https://github.com/ROZ-MOFUMOFU-ME/zny-nomp/](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/ROZ-MOFUMOFU-ME/zny-nomp?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
-[![Matrix](https://img.shields.io/matrix/zny-nomp:matrix.mofumofu.me?label=matrix)](https://app.element.io/#/room/#zny-nomp:matrix.mofumofu.me)
-[![Build Status](https://travis-ci.com/ROZ-MOFUMOFU-ME/zny-nomp.svg?branch=main)](https://travis-ci.org/ROZ-MOFUMOFU-ME/zny-nomp) 
+[![gitter](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/ROZ-MOFUMOFU-ME/zny-nomp)
+[![GitHub CI](https://github.com/ROZ-MOFUMOFU-ME/zny-nomp/actions/workflows/node.js.yml/badge.svg)](https://github.com/ROZ-MOFUMOFU-ME/zny-nomp/actions/workflows/node.js.yml)
 [![CircleCI](https://circleci.com/gh/ROZ-MOFUMOFU-ME/zny-nomp/tree/main.svg?style=svg)](https://circleci.com/gh/ROZ-MOFUMOFU-ME/zny-nomp/tree/main)
 
-This is a Yescrypt, YesPoWer, Lyra2REv2, sha256d and more algo mining pool based off of Node Open Mining Portal.
+This is a Yescrypt, YesPoWer, Lyra2REv2, sha256d, Quark, x11 and more algo mining pool based off of Node Open Mining Portal.
   
 #### Production Usage Notice
 This is beta software. All of the following are things that can change and break an existing ZNY-NOMP setup: functionality of any feature, structure of configuration files and structure of redis data. If you use this software in production then *DO NOT* pull new code straight into production usage because it can and often will break your setup and require you to tweak things like config files or redis data. *Only tagged releases are considered stable.*
@@ -14,23 +13,15 @@ Usage of this software requires abilities with sysadmin, database admin, coin da
 
 
 ### Community
-Forum
-* join: https://bitzeny.tech/
 
-Wiki
-* https://bitzeny.wiki.fc2.com/
-
-Discord
-* https://discord.gg/xmWd3yy
+ZNY-NOMP official Discord Server
+* Join [https://discord.gg/zHUdQy2NzU](https://discord.gg/zHUdQy2NzU)
 
 If your pool uses ZNY-NOMP let us know and we will list your website here.
 
 ### Some pools using ZNY-NOMP or node-stratum-pool module:
 
 * [mofumofu.me - BitZeny Mining Pool](https://zny.mofumofu.me/)
-* [人のプール](https://mining.zinntikumugai.xyz/)
-* [みんなのプール](https://www.minnano-pool.work/)
-* [semipool.net](https://zny.semipool.net/)
 
 Usage
 =====
@@ -38,7 +29,7 @@ Usage
 
 #### Requirements
 * Coin daemon(s) (find the coin's repo and build latest version from source)
-* [Node.js](http://nodejs.org/) v8.11+ ([follow these installation instructions](https://github.com/joyent/node/wiki/Installing-Node.js-via-package-manager))
+* [Node.js](http://nodejs.org/) v16+ ([follow these installation instructions](https://github.com/joyent/node/wiki/Installing-Node.js-via-package-manager))
 * [Redis](http://redis.io/) key-value store v2.6+ ([follow these instructions](http://redis.io/topics/quickstart))
 
 ##### Seriously
@@ -74,14 +65,11 @@ a good pool operator. For starters be sure to read:
 Clone the repository and run `npm update` for all the dependencies to be installed:
 
 ```bash
-sudo apt-get install build-essential libsodium-dev npm libboost-all-dev libgmp3-dev
-sudo apt install nodejs node-gyp libssl1.0-dev -y
-sudo apt install npm -y
+sudo apt-get install build-essential libsodium-dev libboost-all-dev libgmp3-dev node-gyp libssl-dev -y
+sudo apt install nodejs npm -y
 sudo npm install n -g
-sudo n v12
+sudo n stable
 sudo apt purge nodejs npm -y
-sudo ln -sf /usr/local/bin/node /usr/bin/node 
-sudo ln -sf /usr/local/bin/npm /usr/bin/npm 
 git clone https://github.com/ROZ-MOFUMOFU-ME/zny-nomp
 cd zny-nomp
 npm install
@@ -296,6 +284,114 @@ Whenever a miner submits a share, the pool counts the difficulty and keeps addin
 ie: Miner 1 mines at 0.1 difficulty and finds 10 shares, the pool sees it as 1 share. Miner 2 mines at 0.5 difficulty and finds 5 shares, the pool sees it as 2.5 shares.
 ```
 
+```bitzeny.json
+{
+    "enabled": true, // Enables the mining pool; set to false to disable it.
+
+    "coin": "bitzeny.json", // Specifies the coin configuration file.
+
+    "blockIdentifier": "", // A unique string to be embedded in blocks mined by this pool. Used for identification purposes.
+    "_comment_blockIdentifier1": "a string embedded in the block to be mined. Used to identify the pool in Insight etc.",
+    "_comment_blockIdentifire2": "If this value equals null string, website.stratumHost in 'config.json' is used.",
+
+    "address": "", // Server wallet address for receiving and sending mining rewards.
+    "BTCover17": false, // Indicates whether the pool is using Bitcoin Core version 0.17 or higher.
+    "_comment_BTCover17": "If BTC 0.17 or higher, payment does not work please enable it",
+
+    "zAddress": "", // (for KOTO) Server wallet private address used to send tAddress.
+    "_comment_zAddress": "a private address used to send coins to tAddress.",
+
+    "tAddress": "", // (for KOTO) Server wallet transparent address used for payouts to miners.
+    "_comment_tAddress": "transparent address used to send payments, make this a different address, otherwise payments will not send",
+
+    "walletInterval": 2.5, // (for KOTO) The interval in minutes between wallet operations or updates.
+    
+    "rewardRecipients": {
+        "": 1.0 // Your wallet addresses and their corresponding reward percentages.
+    },
+
+    "urlInsight": "", // (option) Using another explorer
+    "_comment_urlInsight": "for using non-default insight: e.g. https://koto-insight-testnet.poolof.work for testnet",
+
+    "paymentProcessing": {
+        "minConf": 10, // Minimum number of confirmations for a block before processing payment.
+        "enabled": true, // Enables payment processing.
+        "paymentMode": "prop", // Payment mode: proportional (prop) or Pay Per Last N Time (pplnt).
+        "_comment_paymentMode": "prop, pplnt",
+        "paymentInterval": 120, // Payment interval in seconds.
+        "minimumPayment": 0.1, // Minimum amount of coins to be paid out.
+        "maxBlocksPerPayment": 3, // Maximum number of blocks to include in a single payment.
+        "daemon": {
+            "host": "127.0.0.1", // Coin daemon RPC server host.
+            "port": 9252, // Coin daemon RPC server port.
+            "user": "username", // Username for daemon RPC server.
+            "password": "password" // Password for daemon RPC server.
+        }
+    },
+
+    "tlsOptions": {
+        "enabled": false, // Enables TLS/SSL; set to true to secure connections.
+        "serverKey": "", // Path to the server key file.
+        "serverCert": "", // Path to the server certificate file.
+        "ca": "" // Path to the certificate authority file.
+    },
+
+    "ports": {
+        "3031": {
+            "diff": 0.5, // Initial difficulty for miners connecting on this port.
+            "tls": false, // Specifies whether TLS is enabled for this port.
+            "varDiff": {
+                "minDiff": 0.00, // Minimum difficulty.
+                "maxDiff": 16, // Maximum difficulty.
+                "targetTime": 15, // Target time per share (in seconds).
+                "retargetTime": 60, // Time to retarget difficulty.
+                "variancePercent": 30 // Allowed variance in percent from target time.
+            }
+        },
+         "3032": {  // (Option) Enable multiple difficulty ports
+            "diff": 5,
+            "tls": false,
+            "varDiff": {
+                "minDiff": 0.01,
+                "maxDiff": 100,
+                "targetTime": 15,
+                "retargetTime": 60,
+                "variancePercent": 30
+            }
+        }
+    },
+
+    "poolId": "main", // Identifier for the mining pool, useful for multi-pool setups.
+    "_comment_poolId": "use it for region identification: eu, us, asia or keep default if you have one stratum instance for one coin",
+
+    "daemons": [
+        {
+            "host": "127.0.0.1", // Host where the coin daemon is running.
+            "port": 9252, // Port on which the coin daemon is listening.
+            "user": "username", // Username for accessing the coin daemon.
+            "password": "password" // Password for accessing the coin daemon.
+        }
+    ],
+
+    "p2p": {
+        "enabled": true, // Enables P2P mode.
+        "host": "127.0.0.1", // Host for the P2P server.
+        "port": 9253, // Port for the P2P server.
+        "disableTransactions": true // Disables transaction messages in P2P mode.
+    },
+
+    "mposMode": {
+        "enabled": false, // Enables MPOS compatibility mode.
+        "host": "127.0.0.1", // Database server host for MPOS mode.
+        "port": 3306, // Database server port for MPOS mode.
+        "user": "", // Database username.
+        "password": "", // Database password.
+        "database": "", // Database name.
+        "checkPassword": true, // Enables password checking for miners.
+        "autoCreateWorker": false // Automatically creates a worker if it doesn't exist.
+    }
+}
+```
 
 ##### [Optional, recommended] Setting up blocknotify
 1. In `config.json` set the port and password for `blockNotifyListener`
@@ -343,17 +439,22 @@ Donations
   * NUKO: 0xa79bde46faab3c40632604728e9f2165b052581c
   * KOTO :k1FTuimwDJ8oo3x23cEBLxovxw5Cqq2U1HK
   * SUSU: SeXbMBaax7NgnTEFEMxin5ycXy9r9CDBot
-  * MONA: mona1qnur6ljkl5pe8w6ql8xfqw4aa38d5xa9q68dxll
+  * MONA: MLEqE3vi11j4ZguMjkvMn5rUtze6kXbAzQ
   * BELL: BCVicYRSqKKt1ynJKPrXHA46hUWLrbjR49
   * SUGAR: sugar1qtwqle9lrr753kxuzqqsh3hv28jl07e3mntx78n
   * VIPS: VFixsia2EstV4uEEigUXUrknDGsFeWyNhE
   * KUMA: KHjjZ5misqq45zwhj86WKqV8bzqcYExzyM
-  * BTC: 3C8oCWjVs2sycQcK3ttiPRSKV4AKBhC7xT
+  * BTC: 3FpbJ5cotwPZQn9fcdZrPv4h72XquzEvez
+  * ETH: 0xc664a0416c23b1b13a18e86cb5fdd1007be375ae
+  * LTC: Lh96WZ7Rw9Wf4GDX2KXpzieneZFV5Xe5ou
+  * BCH: pzdsppue8uwc20x35psaqq8sgchkenr49c0qxzazxu
+  * ETC: 0xc664a0416c23b1b13a18e86cb5fdd1007be375ae
+  * MONA: MLEqE3vi11j4ZguMjkvMn5rUtze6kXbAzQ
 
 Credits
 -------
 ### ZNY-NOMP
-* [ROZ-MOFUMOFU-ME](https://github.com/ROZ-MOFUMOFU-ME)
+* [ROZ](https://github.com/ROZ-MOFUMOFU-ME)
 * [zinntikumugai](https://github.com/zinntikumugai) - great supporter
 
 ### cryptocurrency-stratum-pool
